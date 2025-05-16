@@ -2,27 +2,55 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Phát Video Ngay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>...</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
     }
     video {
-      max-width: 100%;
-      height: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
- <video autoplay controls>
-  <source src="https://github.com/iamdarkv/gnesgnauda/blob/a6efe772646065c6b91eecfd326122fbaaac5a4c/video.mp4" type="video/mp4" />
-  Trình duyệt không hỗ trợ video.
-</video>
+  <video id="vid" autoplay muted playsinline controls>
+    <source src="https://github.com/iamdarkv/gnesgnauda/blob/a6efe772646065c6b91eecfd326122fbaaac5a4c/video.mp4" type="video/mp4" />
+    Trình duyệt của bạn không hỗ trợ video.
+  </video>
+
+  <script>
+    const video = document.getElementById("vid");
+
+    // Tạo Audio Context
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(video);
+    const gainNode = audioCtx.createGain();
+
+    // Tăng âm lượng lên 1000%
+    gainNode.gain.value = 10;
+
+    // Kết nối các node
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    // Bỏ mute để nghe tiếng (sau khi boost volume)
+    video.muted = false;
+
+    // Một số trình duyệt cần tương tác người dùng để phát âm thanh
+    document.body.addEventListener("click", () => {
+      audioCtx.resume();
+      video.play();
+    });
+  </script>
 </body>
 </html>
